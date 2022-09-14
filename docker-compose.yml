@@ -1,0 +1,31 @@
+version: "3.7"
+
+networks:
+  core:
+
+services:
+
+  mssql-server:
+    image: "mcr.microsoft.com/mssql/server:2017-latest"
+    container_name: "mssql-server"
+    hostname: "ms-sqlserver-local"
+    environment:
+      - ACCEPT_EULA=yes
+      - MSSQL_SA_PASSWORD=U5EM9CmPNgt0cXigtiDu
+      - MSSQL_COLLATION=SQL_Latin1_General_CP1_CI_AS
+      - MSSQL_PID=Developer
+    command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P U5EM9CmPNgt0cXigtiDu -d master -Q 'CREATE DATABASE [DevDB]' && sleep infinity"
+    ports:
+      - "0.0.0.0:1433:1433"
+    networks:
+      - core
+
+#  url-tag-jvm:
+#    container_name: "url-tag-jvm"
+#    image: "spring/url-tag-jvm"
+#    ports:
+#      - "0.0.0.0:8000:8000"
+#    networks:
+#      - core
+#    depends_on:
+#      - mssql-server
